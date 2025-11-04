@@ -4,9 +4,7 @@ Imports System.Text.RegularExpressions
 Public Class EditReservationForm
 
     ' 🟢 Property to receive the selected reservation from the calendar
-    Public Property SelectedReservation As Reservation
-
-    Private connectionString As String = "server=localhost;userid=root;password=;database=reservation_db;"
+    Public Property SelectedReservation As ReservationModel
     Private conn As MySqlConnection
 
     ' 🔹 LOAD RESERVATION DATA INTO FIELDS
@@ -43,7 +41,7 @@ Public Class EditReservationForm
 
         ' 2) Proceed to update
         Try
-            Using conn As New MySqlConnection(connectionString)
+            Using conn As New MySqlConnection(DatabaseConnection.connectionString)
                 conn.Open()
 
                 Dim query As String = "
@@ -172,7 +170,7 @@ Public Class EditReservationForm
         ' ✅ Venue availability check
         If isValid Then
             Try
-                Using conn As New MySqlConnection(connectionString)
+                Using conn As New MySqlConnection(DatabaseConnection.connectionString)
                     conn.Open()
                     Dim query As String = "SELECT COUNT(*) FROM occasion_reservations WHERE event_date=@date AND venue_name=@venue AND id<>@id"
                     Using cmd As New MySqlCommand(query, conn)

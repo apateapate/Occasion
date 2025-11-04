@@ -1,17 +1,10 @@
 ﻿Imports MySql.Data.MySqlClient
 
-Public Class ViewReservationForm
+Public Class ViewReservationControl
 
-    Private mainForm As Form1
-    Private connectionString As String = "server=localhost;userid=root;password=;database=reservation_db;"
+    Private mainForm As LoginForm
     Private currentMonth As Date = Date.Today
-    Private reservations As New List(Of Reservation)
-
-    ' Constructor
-    Public Sub New(parent As Form1)
-        InitializeComponent()
-        mainForm = parent
-    End Sub
+    Private reservations As New List(Of ReservationModel)
 
     Private Sub ViewReservations_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadReservationsFromDatabase()
@@ -39,7 +32,7 @@ Public Class ViewReservationForm
                 Using cmd As New MySqlCommand(query, conn)
                     Using reader As MySqlDataReader = cmd.ExecuteReader()
                         While reader.Read()
-                            reservations.Add(New Reservation With {
+                            reservations.Add(New ReservationModel With {
                                 .Id = Convert.ToInt32(reader("id")),
                                 .ClientName = reader("client_name").ToString(),
                                 .ClientEmail = reader("client_email").ToString(),
@@ -112,7 +105,7 @@ Public Class ViewReservationForm
                         )
 
                         If result = DialogResult.Yes Then
-                            Dim placeForm As New placeReservationForm2()
+                            Dim placeForm As New ReservationForm()
                             placeForm.dtpEventDate.Value = eventDate ' prefill date
                             placeForm.Show()
                             Me.Hide()
@@ -190,20 +183,10 @@ Public Class ViewReservationForm
         End Try
     End Sub
 
-    ' 🔙 Back to main form
-    Private Sub btnReturn_Click(sender As Object, e As EventArgs) Handles btnReturn.Click
-        Dim result As DialogResult = MessageBox.Show("Are you sure you want to go back to the main menu?",
-                                                     "Confirm Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-        If result = DialogResult.Yes Then
-            staffForm.Show()
-            Me.Close()
-        End If
-    End Sub
-
 End Class
 
 ' 🔸 Reservation class model
-Public Class Reservation
+Public Class ReservationModel
     Public Property Id As Integer
     Public Property ClientName As String
     Public Property ClientEmail As String

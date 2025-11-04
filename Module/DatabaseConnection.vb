@@ -2,7 +2,7 @@
 
 Module DatabaseConnection
     ' 🔹 Change your database name or port here if needed
-    Public connectionString As String = "server=localhost;userid=root;password=;database=reservation_db;"
+    Public connectionString As String = "server=localhost;userid=root;password=;database=occasion;"
     Public conn As New MySqlConnection(connectionString)
 
     Public Sub OpenConnection()

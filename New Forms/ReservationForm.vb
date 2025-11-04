@@ -1,6 +1,6 @@
 ﻿Imports MySql.Data.MySqlClient
 
-Public Class placeReservationForm2
+Public Class ReservationForm
 
     ' ✅ Property to receive venue from previous form
     Public Property SelectedVenue As String
@@ -123,11 +123,7 @@ Public Class placeReservationForm2
                 cmd.ExecuteNonQuery()
                 MessageBox.Show("Reservation successfully added!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
-                ' ✅ Go back to the already open staff form
-                staffForm.Show()
-                Me.Hide()
-
-
+                Me.Close()
             End Using
 
         Catch ex As Exception
@@ -161,14 +157,12 @@ Public Class placeReservationForm2
 
     Private Sub picBack_Click(sender As Object, e As EventArgs) Handles picBack.Click
         Dim confirm As DialogResult = MessageBox.Show(
-            "Are you sure you want to go back? Unsaved data will be lost.",
+            "Are you sure you want to close this form? Unsaved data will be lost.",
             "Confirm Return",
             MessageBoxButtons.YesNo,
             MessageBoxIcon.Warning)
 
         If confirm = DialogResult.Yes Then
-            Dim staffForm As New staffForm()
-            staffForm.Show()
             Me.Close()
         End If
     End Sub
@@ -242,10 +236,6 @@ Public Class placeReservationForm2
             lblEmail.Text = "Please enter a valid email"
         End If
     End Sub
-    Private Sub txtEventName_TextChanged(sender As Object, e As EventArgs) Handles txtEventName.TextChanged
-
-    End Sub
-
     Private Sub txtDuration_TextChanged(sender As Object, e As EventArgs) Handles txtDuration.TextChanged
         ' Remove the word "hours" temporarily for validation
         Dim input As String = txtDuration.Text.Replace("hours", "").Trim()
@@ -315,11 +305,8 @@ Public Class placeReservationForm2
             Exit Sub
         End If
 
-        ' Connection string — adjust if your database name or credentials differ
-        Dim connectionString As String = "server=localhost;userid=root;password=;database=reservation_db;"
-
         Try
-            Using conn As New MySqlConnection(connectionString)
+            Using conn As New MySqlConnection(DatabaseConnection.connectionString)
                 conn.Open()
 
                 ' ✅ Check if the same venue is already booked on the same date
@@ -427,9 +414,8 @@ Public Class placeReservationForm2
 
         ' EVENT DATE (Check if already booked)
         Dim selectedDate As Date = dtpEventDate.Value.Date
-        Dim connectionString As String = "server=localhost;userid=root;password=;database=reservation_db;"
         Try
-            Using conn As New MySqlConnection(connectionString)
+            Using conn As New MySqlConnection(DatabaseConnection.connectionString)
                 conn.Open()
                 Dim query As String = "SELECT COUNT(*) FROM reservations WHERE event_date = @event_date"
                 Using cmd As New MySqlCommand(query, conn)
